@@ -1,33 +1,9 @@
 import{Box, Button, Text, TextField, Image} from '@skynexui/components'
+import React from 'react';
+import {useRouter} from 'next/router'  //sistema de roteamento do nextJS
 import appConfig from "../config.json";
-function GlobalStyle() {
-    return (
-      <style global jsx>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          list-style: none;
-        }
-        body {
-          font-family: 'Open Sans', sans-serif;
-        }
-        /* App fit Height */ 
-        html, body, #__next {
-          min-height: 100vh;
-          display: flex;
-          flex: 1;
-        }
-        #__next {
-          flex: 1;
-        }
-        #__next > * {
-          flex: 1;
-        }
-        /* ./App fit Height */ 
-      `}</style>
-    );
-  }
+
+
 
 function Titulo(props) {
     console.log(props);
@@ -46,29 +22,14 @@ function Titulo(props) {
     );
 }
 
-
-//componente React
-/* function HomePage() {
-    //JSX
-    return (
-        <div>
-            <GlobalStyle />
-           <Titulo tag='h2'>Boas vindas de volta!</Titulo>
-           <h2>Discord - Alura Matrix</h2>
-
-        </div>
-    ) 
-    
-  }
-  
-  export default HomePage */
-
   export default function PaginaInicial() {
-    const username = 'markos-jr';
-  
+    /* const username = 'markos-jr'; */
+    const [username, setUsername] = React.useState('markos-jr');
+    const roteamento = useRouter();
+
     return (
       <>
-        <GlobalStyle />
+        
         <Box
           styleSheet={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -91,13 +52,19 @@ function Titulo(props) {
               width: '100%', maxWidth: '700px',
               borderRadius: '15px', padding: '32px', margin: '16px',
               boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-              backgroundColor: appConfig.theme.colors.neutrals[900],
+              backgroundColor: '#212931cc',
               
             }}
           >
             {/* Formulário */}
             <Box
               as="form"
+              onSubmit={function (infosDoEvento) {
+                infosDoEvento.preventDefault();
+                console.log('Alguém submeteu o form')
+                roteamento.push('/chat')
+                /* window.location.href = '/chat'  */// modo tradicional de chamar a pg chat.js
+              }}
               styleSheet={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
@@ -107,19 +74,44 @@ function Titulo(props) {
               <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
                 {appConfig.name}
               </Text>
-  
-              <TextField
+              
+          {
+          
+          /*     Código anterior ao TextField
+          
+          <input type="text"
+              //value= 'markos-jr'
+              onChange={function (event){
+                console.log('usuário digitiou', event.target.value) -
+                //Onde está o valor?
+                const valor = event.target.value;
+                //Trocar o valor da variavel
+                //Através do react e avise quem precisa
+                setUsername(valor);
+              }}
+              /> */}
+             { <TextField
+                value= {username}
+                onChange={function (event){
+                  console.log('usuário digitiou', event.target.value)
+                  //Onde está o valor?
+                  const valor = event.target.value;
+                  //Trocar o valor da variavel
+                  //Através do react e avise quem precisa
+                  setUsername(valor);
+                }}
                 fullWidth
                 textFieldColors={{
                   neutral: {
-                    textColor: appConfig.theme.colors.neutrals[200],
+                    textColor: appConfig.theme.colors.neutrals[900],
                     mainColor: appConfig.theme.colors.neutrals[900],
                     mainColorHighlight: appConfig.theme.colors.primary[500],
                     backgroundColor: appConfig.theme.colors.neutrals[100],
                   },
+
                 }}
-              />
-              <Button
+              />}
+              <Button 
                 type='submit'
                 label='Entrar'
                 fullWidth
@@ -130,8 +122,8 @@ function Titulo(props) {
                   mainColorStrong: appConfig.theme.colors.primary[600],
                 }}
               />
-            </Box>
             {/* Formulário */}
+            </Box>
   
   
             {/* Photo Area */}
@@ -144,8 +136,8 @@ function Titulo(props) {
                 padding: '16px',
                 backgroundColor: appConfig.theme.colors.neutrals[800],
                 border: '1px solid',
-                borderColor: appConfig.theme.colors.neutrals[900],
-                borderRadius: '40px',
+                borderColor: 'rgb(0,0,0,0)',
+                borderRadius: '0px',
                 flex: 1,
                 minHeight: '240px',
               }}
