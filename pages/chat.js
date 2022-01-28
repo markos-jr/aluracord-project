@@ -1,35 +1,79 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js'
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMxNTE5OCwiZXhwIjoxOTU4ODkxMTk4fQ.l9Du12kFW0sphptm9aDcpoNJ_Zcnz1eba5vPbbtJbfE';
+const SUPABE_URL = 'https://xadvsrwaemhzsddpdmqv.supabase.co';
+const supabaseClient = createClient(SUPABE_URL, SUPABASE_ANON_KEY);
+
+/*
+fetch(`${SUPABASE_URL}/rest/v1/mensagens?select=*`, {
+    headers: {
+        'Content- Type': 'application/json',
+        'apikey': supabaseAnonKey,
+        'Authorrization': 'Bearer' + supabaseAnonKey,
+    }
+})
+.then((res) => {
+    return res.json();
+})
+.then((response) => {
+    console.log(response);
+});
+*/
 
 export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
-    // Sua lógica vai aqui
 
-    // ./Sua lógica vai aqui
 
-    /* Usuário
-    // usuário aperta enter para enviar
-    // tem que adicionar o texto na listagem 
-    // Dev
-    // usar o onChange, useState
-    // lista de mensagens */
+    React.useEffect(() => {
+        supabaseClient
+            .from('mensagens')
+            .select('*')
+            .order('id', { ascending: false })
+            .then(({ data }) => {
+                console.log('Dados da consulta:', data);
+                setListaDeMensagens(data)
+            });
+    }, []);
+
+    /*  Sua lógica vai aqui
+
+     Sua lógica vai aqui
+
+     Usuário
+     usuário aperta enter para enviar
+     tem que adicionar o texto na listagem 
+     Dev
+     usar o onChange, useState
+     lista de mensagens  */
 
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
-            id: listaDeMensagens.length + 1,
+            /* id: listaDeMensagens.length + 1, */
             de: 'markos-jr',
             texto: novaMensagem,
         };
+        supabaseClient
+            .from('mensagens')
+            .insert([
+                /* Tem que ser um objeto igual ao que você escreveu no supabase */
+                mensagem
+            ])
+            .then(({ data }) => {
+                console.log('Criando Mensagem: ', data);
+                setListaDeMensagens([
+                    data[0],
+                    ...listaDeMensagens,
+                ]);
+            });
+
 
         // Chamada de um backend
 
-        setListaDeMensagens([
-            mensagem,
-            ...listaDeMensagens,
-        ]);
         setMensagem('');
     }
 
@@ -69,7 +113,7 @@ export default function ChatPage() {
                         padding: '16px',
                     }}
                 >
-                    <MessageList mensagens={listaDeMensagens}/>
+                    <MessageList mensagens={listaDeMensagens} />
                     {/* {listaDeMensagens.map((mensagemAtual) => {
                         return (
                             <li key={mensagemAtual.id}>
@@ -111,8 +155,8 @@ export default function ChatPage() {
                                 color: appConfig.theme.colors.neutrals[100],
                             }}
 
-                           
-                        /> 
+
+                        />
                         <Button
                             onClick={() => handleNovaMensagem(mensagem)}
                             label='Enviar'
@@ -146,12 +190,12 @@ function Header() {
         <>
             <Box styleSheet={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
                 <Text variant='heading5'>
-                    Chat 
+                    Chat
                 </Text>
                 <Button
-                styleSheet={{
-                    color: appConfig.theme.colors.neutrals[100],
-                }}
+                    styleSheet={{
+                        color: appConfig.theme.colors.neutrals[100],
+                    }}
                     variant='tertiary'
                     colorVariant='neutral'
                     label='Logout'
@@ -203,7 +247,7 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/markos-jr.png`}
+                                src={`https://github.com/${mensagem.de}.png`}
                             />
                             <Text tag="strong">
                                 {mensagem.de}
