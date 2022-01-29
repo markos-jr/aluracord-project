@@ -1,6 +1,6 @@
-import{Box, Button, Text, TextField, Image} from '@skynexui/components'
+import { Box, Button, Text, TextField, Image } from '@skynexui/components'
 import React from 'react';
-import {useRouter} from 'next/router'  //sistema de roteamento do nextJS
+import { useRouter } from 'next/router'  //sistema de roteamento do nextJS
 import appConfig from "../config.json";
 
 
@@ -62,7 +62,7 @@ export default function PaginaInicial() {
             onSubmit={function (infosDoEvento) {
               infosDoEvento.preventDefault();
               console.log('Alguém submeteu o form')
-              roteamento.push('/chat')
+              roteamento.push(`/chat?username=${username}`)
               /* window.location.href = '/chat'  */// modo tradicional de chamar a pg chat.js
             }}
             styleSheet={{
@@ -90,9 +90,9 @@ export default function PaginaInicial() {
                 setUsername(valor);
               }}
               /> */}
-            { <TextField
-              value= {username}
-              onChange={function (event){
+            {<TextField
+              value={username}
+              onChange={function (event) {
                 console.log('usuário digitiou', event.target.value)
                 //Onde está o valor?
                 const valor = event.target.value;
